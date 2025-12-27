@@ -3,128 +3,257 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>温馨提示</title>
+<title>🎄 Merry Christmas</title>
+
 <style>
     body {
         margin: 0;
+        height: 100vh;
+        background: radial-gradient(circle at top, #0b1d3a, #020814);
         overflow: hidden;
-        background: #fffafc;
         font-family: "Microsoft YaHei", sans-serif;
+        color: #fff;
     }
 
-    .tip {
-        position: fixed;
-        width: 260px;
+    /* 视频容器 - 作为背景/装饰层 */
+    .video-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; /* 置于最底层，不遮挡其他元素 */
+        opacity: 0.25; /* 降低透明度，融合背景 */
+        overflow: hidden;
+    }
+
+    .bg-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 铺满容器，保持比例 */
+    }
+
+    /* 星星 */
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        opacity: 0.8;
+        border-radius: 50%;
+        animation: twinkle 2s infinite alternate;
+        z-index: 1; /* 星星在视频上层 */
+    }
+
+    @keyframes twinkle {
+        from { opacity: 0.3; }
+        to   { opacity: 1; }
+    }
+
+    /* 圣诞树容器 —— 关键修改在这里 */
+    .tree {
+        position: absolute;
+        bottom: 80px;
+        left: 50%;
+        /* 确保缩放以底部为中心 */
+        transform-origin: bottom center;
+        /* 初始隐藏：高度压缩 + 透明 */
+        transform: translateX(-50%) scaleY(0);
+        opacity: 0;
+        /* 生长动画 */
+        animation: growIn 2.2s ease-out forwards;
+        width: 0;
+        height: 0;
+        z-index: 2; /* 圣诞树在视频和星星上层 */
+    }
+
+    @keyframes growIn {
+        to {
+            transform: translateX(-50%) scaleY(1);
+            opacity: 1;
+        }
+    }
+
+    /* 树层 */
+    .layer {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 140px solid transparent;
+        border-right: 140px solid transparent;
+        border-bottom: 120px solid #0f8a5f;
+        filter: drop-shadow(0 0 15px rgba(0,255,180,0.4));
+    }
+
+    .layer:nth-child(1) { top: 0; }
+    .layer:nth-child(2) {
+        top: 70px;
+        border-left-width: 160px;
+        border-right-width: 160px;
+        border-bottom-width: 140px;
+    }
+    .layer:nth-child(3) {
+        top: 150px;
+        border-left-width: 190px;
+        border-right-width: 190px;
+        border-bottom-width: 160px;
+    }
+
+    /* 树干 */
+    .trunk {
+        position: absolute;
+        top: 310px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
         height: 80px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        color: #333;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        animation: fadeIn 0.5s ease;
+        background: #6b3e26;
+        border-radius: 6px;
+    }
+
+    /* 星星顶 */
+    .top-star {
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 36px;
+        color: gold;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        from { text-shadow: 0 0 10px gold; }
+        to   { text-shadow: 0 0 25px gold; }
+    }
+
+    /* 彩灯 */
+    .light {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        animation: blink 1.5s infinite alternate;
+        z-index: 3; /* 彩灯在最上层 */
+    }
+
+    @keyframes blink {
+        from { opacity: 0.3; }
+        to   { opacity: 1; }
+    }
+
+    /* 祝福文字 */
+    .message {
+        position: absolute;
+        top: 18%;
+        width: 100%;
+        text-align: center;
+        font-size: 26px;
+        line-height: 1.6;
+        text-shadow: 0 0 15px rgba(255,255,255,0.6);
+        /* 可选：也让文字淡入 */
+        opacity: 0;
+        animation: fadeIn 1.5s 0.5s forwards;
+        z-index: 2; /* 文字在视频上层 */
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.8); }
-        to   { opacity: 1; transform: scale(1); }
+        to { opacity: 1; }
     }
 
-    .final {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 260px;
-        height: 80px;
-        background: lightpink;
-        font-size: 20px;
-        font-weight: bold;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    .sub {
+        font-size: 16px;
+        opacity: 0.8;
+        margin-top: 10px;
+    }
+
+    /* 飘雪 */
+    .snow {
+        position: absolute;
+        top: -10px;
+        color: white;
+        opacity: 0.8;
+        animation: fall linear infinite;
+        z-index: 2; /* 飘雪在视频上层 */
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(110vh);
+        }
     }
 </style>
 </head>
 
 <body>
+<!-- 视频背景容器 -->
+<div class="video-container">
+    <!-- 替换为你的视频链接（支持mp4/webm格式，可使用本地视频或在线视频链接） -->
+    <video class="bg-video" autoplay loop muted playsinline>
+        <source src="christmas-bg.mp4" type="video/mp4">
+        <!-- 备用视频格式 -->
+        <source src="christmas-bg.webm" type="video/webm">
+        <!-- 浏览器不支持视频时的提示 -->
+        您的浏览器不支持视频播放
+    </video>
+</div>
+
+<div class="message">
+    🎄 圣诞快乐  
+    <div class="sub">愿黄思棉同学圣诞快乐、明天顺利。成绩越来越好！</div>
+</div>
+
+<div class="tree">
+    <div class="top-star">★</div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="trunk"></div>
+</div>
 
 <audio id="bgm" src="最后一页.mp3" loop></audio>
 
 <script>
-const tips = [
-    '多喝水哦~', '保持微笑呀', '每天都要元气满满',
-    '记得吃水果', '保持好心情', '好好爱自己',
-    '我想你了', '梦想成真', '期待下一次见面',
-    '顺顺利利', '早点休息', '愿所有烦恼都消失',
-    '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服',
-
-    // 🌟 三角洲祝福
-    '三角洲祝你每一次行动都平安归来',
-    '三角洲在，安心在',
-    '愿三角洲的灯，照亮你回家的路'
-];
-
-const colors = [
-    'lightpink','skyblue','lightgreen','lavender',
-    'lightyellow','plum','coral','bisque',
-    'aquamarine','mistyrose','honeydew'
-];
-
-const total = 200;
-const tipsDom = [];
-
-function random(min, max) {
-    return Math.random() * (max - min) + min;
+/* 星星 */
+for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * window.innerWidth + 'px';
+    star.style.top  = Math.random() * window.innerHeight + 'px';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    document.body.appendChild(star);
 }
 
-// 播放音乐（需要用户首次点击）
+/* 彩灯 */
+const colors = ['red', 'gold', 'deepskyblue', 'hotpink', 'lime'];
+for (let i = 0; i < 30; i++) {
+    const light = document.createElement('div');
+    light.className = 'light';
+    light.style.background = colors[Math.floor(Math.random() * colors.length)];
+    light.style.left = (window.innerWidth / 2 - 150 + Math.random() * 300) + 'px';
+    light.style.top  = (window.innerHeight - 350 + Math.random() * 220) + 'px';
+    light.style.animationDelay = Math.random() * 2 + 's';
+    document.body.appendChild(light);
+}
+
+/* 飘雪 */
+for (let i = 0; i < 50; i++) {
+    const snow = document.createElement('div');
+    snow.className = 'snow';
+    snow.innerText = '❄';
+    snow.style.left = Math.random() * window.innerWidth + 'px';
+    snow.style.fontSize = (12 + Math.random() * 10) + 'px';
+    snow.style.animationDuration = (5 + Math.random() * 6) + 's';
+    snow.style.animationDelay = Math.random() * 5 + 's';
+    document.body.appendChild(snow);
+}
+
+/* 音乐：首次点击播放 */
 document.body.addEventListener('click', () => {
     document.getElementById('bgm').play();
+    // 点击后可选择提高视频透明度，增强视觉效果
+    document.querySelector('.video-container').style.opacity = '0.4';
 }, { once: true });
-
-let count = 0;
-const interval = setInterval(() => {
-    if (count >= total) {
-        clearInterval(interval);
-        closeAll();
-        return;
-    }
-
-    const div = document.createElement('div');
-    div.className = 'tip';
-    div.innerText = tips[Math.floor(Math.random() * tips.length)];
-    div.style.background = colors[Math.floor(Math.random() * colors.length)];
-    div.style.left = random(-20, window.innerWidth - 260) + 'px';
-    div.style.top  = random(-20, window.innerHeight - 80) + 'px';
-
-    document.body.appendChild(div);
-    tipsDom.push(div);
-    count++;
-}, 1000);
-
-function closeAll() {
-    let i = 0;
-    const closeTimer = setInterval(() => {
-        if (i < tipsDom.length) {
-            tipsDom[i].remove();
-            i++;
-        } else {
-            clearInterval(closeTimer);
-            showFinal();
-        }
-    }, 10);
-}
-
-function showFinal() {
-    const final = document.createElement('div');
-    final.className = 'final';
-    final.innerText = '我想你了';
-    document.body.appendChild(final);
-}
 </script>
 
 </body>
