@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>温馨提示</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: #fffafc;
+        font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    .tip {
+        position: fixed;
+        width: 260px;
+        height: 80px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #333;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    .final {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 260px;
+        height: 80px;
+        background: lightpink;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" src="最后一页.mp3" loop></audio>
+
+<script>
+const tips = [
+    '多喝水哦~', '保持微笑呀', '每天都要元气满满',
+    '记得吃水果', '保持好心情', '好好爱自己',
+    '我想你了', '梦想成真', '期待下一次见面',
+    '顺顺利利', '早点休息', '愿所有烦恼都消失',
+    '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服',
+
+    // 🌟 三角洲祝福
+    '三角洲祝你每一次行动都平安归来',
+    '三角洲在，安心在',
+    '愿三角洲的灯，照亮你回家的路'
+];
+
+const colors = [
+    'lightpink','skyblue','lightgreen','lavender',
+    'lightyellow','plum','coral','bisque',
+    'aquamarine','mistyrose','honeydew'
+];
+
+const total = 200;
+const tipsDom = [];
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// 播放音乐（需要用户首次点击）
+document.body.addEventListener('click', () => {
+    document.getElementById('bgm').play();
+}, { once: true });
+
+let count = 0;
+const interval = setInterval(() => {
+    if (count >= total) {
+        clearInterval(interval);
+        closeAll();
+        return;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'tip';
+    div.innerText = tips[Math.floor(Math.random() * tips.length)];
+    div.style.background = colors[Math.floor(Math.random() * colors.length)];
+    div.style.left = random(-20, window.innerWidth - 260) + 'px';
+    div.style.top  = random(-20, window.innerHeight - 80) + 'px';
+
+    document.body.appendChild(div);
+    tipsDom.push(div);
+    count++;
+}, 1000);
+
+function closeAll() {
+    let i = 0;
+    const closeTimer = setInterval(() => {
+        if (i < tipsDom.length) {
+            tipsDom[i].remove();
+            i++;
+        } else {
+            clearInterval(closeTimer);
+            showFinal();
+        }
+    }, 10);
+}
+
+function showFinal() {
+    const final = document.createElement('div');
+    final.className = 'final';
+    final.innerText = '我想你了';
+    document.body.appendChild(final);
+}
+</script>
+
+</body>
+</html>
